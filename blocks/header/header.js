@@ -1,197 +1,184 @@
-import { getConfig, getMetadata } from '../../scripts/ak.js';
-import { loadFragment } from '../fragment/fragment.js';
-import { setColorScheme } from '../section-metadata/section-metadata.js';
+const NAV_LOCAL = '/content/nav.plain.html';
 
-const { locale } = getConfig();
+function getNavPath() {
+  const meta = document.querySelector('meta[name="header"]')?.content;
+  if (meta) return meta.replace(/\.plain\.html$/, '');
+  return '/nav';
+}
 
-const HEADER_PATH = '/fragments/nav/header';
-const HEADER_ACTIONS = [
-  '/tools/widgets/scheme',
-  '/tools/widgets/language',
-  '/tools/widgets/toggle',
-];
-
-function closeAllMenus() {
-  const openMenus = document.body.querySelectorAll('header .is-open');
-  for (const openMenu of openMenus) {
-    openMenu.classList.remove('is-open');
+async function fetchNav() {
+  let resp = await fetch(NAV_LOCAL);
+  if (!resp.ok) {
+    resp = await fetch(`${getNavPath()}.plain.html`);
   }
+  if (!resp.ok) return null;
+  const html = await resp.text();
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp;
 }
 
-function docClose(e) {
-  if (e.target.closest('header')) return;
-  closeAllMenus();
-}
-
-function toggleMenu(menu) {
-  const isOpen = menu.classList.contains('is-open');
-  closeAllMenus();
-  if (isOpen) {
-    document.removeEventListener('click', docClose);
-    return;
-  }
-
-  // Setup the global close event
-  document.addEventListener('click', docClose);
-  menu.classList.add('is-open');
-}
-
-function decorateLanguage(btn) {
-  const section = btn.closest('.section');
-  btn.addEventListener('click', async () => {
-    let menu = section.querySelector('.language.menu');
-    if (!menu) {
-      const content = document.createElement('div');
-      content.classList.add('block-content');
-      const fragment = await loadFragment(`${locale.prefix}${HEADER_PATH}/languages`);
-      menu = document.createElement('div');
-      menu.className = 'language menu';
-      menu.append(fragment);
-      content.append(menu);
-      section.append(content);
-    }
-    toggleMenu(section);
-  });
-}
-
-function decorateScheme(btn) {
-  btn.addEventListener('click', async () => {
-    const { body } = document;
-
-    let currPref = localStorage.getItem('color-scheme');
-    if (!currPref) {
-      currPref = matchMedia('(prefers-color-scheme: dark)')
-        .matches ? 'dark-scheme' : 'light-scheme';
-    }
-
-    const theme = currPref === 'dark-scheme'
-      ? { add: 'light-scheme', remove: 'dark-scheme' }
-      : { add: 'dark-scheme', remove: 'light-scheme' };
-
-    body.classList.remove(theme.remove);
-    body.classList.add(theme.add);
-    localStorage.setItem('color-scheme', theme.add);
-    // Re-calculatie section schemes
-    const sections = document.querySelectorAll('.section');
-    for (const section of sections) {
-      setColorScheme(section);
-    }
-  });
-}
-
-function decorateNavToggle(btn) {
-  btn.addEventListener('click', () => {
-    const header = document.body.querySelector('header');
-    if (header) header.classList.toggle('is-mobile-open');
-  });
-}
-
-async function decorateAction(header, pattern) {
-  const link = header.querySelector(`[href*="${pattern}"]`);
-  if (!link) return;
-
-  const icon = link.querySelector('.icon');
-  const text = link.textContent;
-  const btn = document.createElement('button');
-  if (icon) btn.append(icon);
-  if (text) {
-    const textSpan = document.createElement('span');
-    textSpan.className = 'text';
-    textSpan.textContent = text;
-    btn.append(textSpan);
-  }
+function buildPromo(section) {
   const wrapper = document.createElement('div');
-  wrapper.className = `action-wrapper ${icon.classList[1].replace('icon-', '')}`;
-  wrapper.append(btn);
-  link.parentElement.parentElement.replaceChild(wrapper, link.parentElement);
-
-  if (pattern === '/tools/widgets/language') decorateLanguage(btn);
-  if (pattern === '/tools/widgets/scheme') decorateScheme(btn);
-  if (pattern === '/tools/widgets/toggle') decorateNavToggle(btn);
-}
-
-function decorateMenu() {
-  // TODO: finish single menu support
-  return null;
-}
-
-function decorateMegaMenu(li) {
-  const menu = li.querySelector('.fragment-content');
-  if (!menu) return null;
-  const wrapper = document.createElement('div');
-  wrapper.className = 'mega-menu';
-  wrapper.append(menu);
-  li.append(wrapper);
+  wrapper.className = 'nav-promo';
+  const inner = document.createElement('div');
+  inner.className = 'nav-promo-inner';
+  const ps = [...section.querySelectorAll('p')];
+  const textP = ps[0];
+  const linkA = section.querySelector('a');
+  if (textP) {
+    const span = document.createElement('span');
+    span.className = 'nav-promo-text';
+    span.textContent = textP.textContent;
+    inner.append(span);
+  }
+  if (linkA) {
+    linkA.className = 'nav-promo-cta';
+    inner.append(linkA);
+  }
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'nav-promo-close';
+  close.setAttribute('aria-label', 'Close banner');
+  close.innerHTML = '&times;';
+  close.addEventListener('click', () => wrapper.remove());
+  wrapper.append(inner, close);
   return wrapper;
 }
 
-function decorateNavItem(li) {
-  li.classList.add('main-nav-item');
-  const link = li.querySelector(':scope > p > a');
-  if (link) link.classList.add('main-nav-link');
-  const menu = decorateMegaMenu(li) || decorateMenu(li);
-  if (!(menu || link)) return;
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    toggleMenu(li);
+function buildBrand(section) {
+  const brand = document.createElement('div');
+  brand.className = 'nav-brand';
+  const link = section.querySelector('a');
+  if (link) brand.append(link);
+  return brand;
+}
+
+function buildSearch() {
+  const form = document.createElement('form');
+  form.className = 'nav-search';
+  form.setAttribute('role', 'search');
+  form.action = 'https://www.gct.com/tripsavailable';
+  const input = document.createElement('input');
+  input.type = 'search';
+  input.name = 'q';
+  input.placeholder = 'Search Destinations';
+  input.setAttribute('aria-label', 'Search Destinations');
+  const btn = document.createElement('button');
+  btn.type = 'submit';
+  btn.className = 'nav-search-btn';
+  btn.setAttribute('aria-label', 'Search');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5Zm-6 0A4.5 4.5 0 1 1 14 9.5 4.49 4.49 0 0 1 9.5 14Z"/></svg>';
+  form.append(input, btn);
+  return form;
+}
+
+function buildUtility(section) {
+  const util = document.createElement('div');
+  util.className = 'nav-utility';
+  const links = [...section.querySelectorAll('a')];
+  links.forEach((a) => {
+    const href = a.getAttribute('href') || '';
+    if (href.startsWith('tel:')) {
+      a.className = 'nav-phone';
+      a.insertAdjacentHTML('afterbegin', '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.25 1.02l-2.2 2.2Z"/></svg> ');
+    } else if (/\/sign-in/.test(href)) {
+      a.className = 'nav-signin';
+      a.insertAdjacentHTML('afterbegin', '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.34 0-10 1.67-10 5v3h20v-3c0-3.33-6.66-5-10-5Z"/></svg> ');
+    } else {
+      a.className = 'nav-register';
+    }
   });
+  const account = document.createElement('div');
+  account.className = 'nav-account';
+  const signin = links.find((a) => a.classList.contains('nav-signin'));
+  const register = links.find((a) => a.classList.contains('nav-register'));
+  const phone = links.find((a) => a.classList.contains('nav-phone'));
+  if (phone) util.append(phone);
+  if (signin) account.append(signin);
+  if (signin && register) {
+    const sep = document.createElement('span');
+    sep.className = 'nav-account-sep';
+    sep.textContent = '/';
+    account.append(sep);
+  }
+  if (register) account.append(register);
+  if (account.childNodes.length) util.append(account);
+  return util;
 }
 
-function decorateBrandSection(section) {
-  section.classList.add('brand-section');
-  const brandLink = section.querySelector('a');
-  const [, text] = brandLink.childNodes;
-  const span = document.createElement('span');
-  span.className = 'brand-text';
-  span.append(text);
-  brandLink.append(span);
-}
-
-function decorateNavSection(section) {
-  section.classList.add('main-nav-section');
-  const navContent = section.querySelector('.default-content');
-  const navList = section.querySelector('ul');
-  if (!navList) return;
-  navList.classList.add('main-nav-list');
-
+function buildMainNav(section) {
   const nav = document.createElement('nav');
-  nav.append(navList);
-  navContent.append(nav);
-
-  const mainNavItems = section.querySelectorAll('nav > ul > li');
-  for (const navItem of mainNavItems) {
-    decorateNavItem(navItem);
+  nav.className = 'nav-main';
+  nav.setAttribute('aria-label', 'Main');
+  const list = section.querySelector('ul');
+  if (list) {
+    list.className = 'nav-main-list';
+    [...list.querySelectorAll('li')].forEach((li) => {
+      li.className = 'nav-main-item';
+      const a = li.querySelector('a');
+      if (a && /special offers/i.test(a.textContent)) {
+        a.className = 'nav-cta';
+        li.classList.add('nav-main-item-cta');
+      } else if (a) {
+        a.className = 'nav-main-link';
+      } else if (li.textContent.trim()) {
+        // Text-only item (dropdown trigger with chevron; no panel content on source).
+        const span = document.createElement('span');
+        span.className = 'nav-main-link nav-main-trigger';
+        span.textContent = li.textContent.trim();
+        const chevron = document.createElement('span');
+        chevron.className = 'nav-chevron';
+        chevron.setAttribute('aria-hidden', 'true');
+        chevron.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" focusable="false"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>';
+        span.append(chevron);
+        li.textContent = '';
+        li.append(span);
+      }
+    });
+    nav.append(list);
   }
+  return nav;
 }
 
-async function decorateActionSection(section) {
-  section.classList.add('actions-section');
-}
-
-async function decorateHeader(fragment) {
-  const sections = fragment.querySelectorAll(':scope > .section');
-  if (sections[0]) decorateBrandSection(sections[0]);
-  if (sections[1]) decorateNavSection(sections[1]);
-  if (sections[2]) decorateActionSection(sections[2]);
-
-  for (const pattern of HEADER_ACTIONS) {
-    decorateAction(fragment, pattern);
-  }
-}
-
-/**
- * loads and decorates the header
- * @param {Element} el The header element
- */
 export default async function init(el) {
-  const headerMeta = getMetadata('header');
-  const path = headerMeta || HEADER_PATH;
-  try {
-    const fragment = await loadFragment(`${locale.prefix}${path}`);
-    fragment.classList.add('header-content');
-    await decorateHeader(fragment);
-    el.append(fragment);
-  } catch (e) {
-    throw Error(e);
-  }
+  const nav = await fetchNav();
+  if (!nav) return;
+  const sections = [...nav.children].filter((c) => c.tagName === 'DIV');
+  // sections: [0]=promo, [1]=brand, [2]=utility links, [3]=main nav list
+  const promoSection = sections[0];
+  const brandSection = sections[1];
+  const utilSection = sections[2];
+  const navSection = sections[3];
+
+  el.textContent = '';
+
+  if (promoSection) el.append(buildPromo(promoSection));
+
+  // Two-column header bar: logo (left, spans both rows) + right column that
+  // stacks the utility row (search/phone/account) above the main nav row.
+  const bar = document.createElement('div');
+  bar.className = 'nav-bar';
+  const barInner = document.createElement('div');
+  barInner.className = 'nav-bar-inner';
+
+  if (brandSection) barInner.append(buildBrand(brandSection));
+
+  const barRight = document.createElement('div');
+  barRight.className = 'nav-bar-right';
+
+  const utilityRow = document.createElement('div');
+  utilityRow.className = 'nav-utility-row';
+  utilityRow.append(buildSearch());
+  if (utilSection) utilityRow.append(buildUtility(utilSection));
+
+  const navRow = document.createElement('div');
+  navRow.className = 'nav-row';
+  if (navSection) navRow.append(buildMainNav(navSection));
+
+  barRight.append(utilityRow, navRow);
+  barInner.append(barRight);
+  bar.append(barInner);
+
+  el.append(bar);
 }

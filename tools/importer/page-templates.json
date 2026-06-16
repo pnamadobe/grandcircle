@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "projectType": "da"
+  },
+  "templates": [
+    {
+      "name": "grand-circle-difference",
+      "urls": [
+        "https://pnamadobe.github.io/gcdifference/"
+      ],
+      "representativeUrl": "https://pnamadobe.github.io/gcdifference/",
+      "coverageGaps": [],
+      "description": "Single content page describing the Grand Circle difference (cloned mirror of gct.com/grand-circle-difference). Hero plus six titled feature sections, each with heading, intro emphasis, image, and body copy.",
+      "blocks": [
+        {
+          "name": "columns-feature",
+          "instances": [
+            "main .opti-content-area-item-0 .mt-10 > div.mb-5.grid.grid-cols-1.md\\:grid-cols-2"
+          ]
+        }
+      ]
+    }
+  ]
+}

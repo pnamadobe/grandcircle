@@ -1,0 +1,141 @@
+.section-nav {
+  width: 100%;
+}
+
+/* Two-column layout in a centered container (matches the source: a 1280px
+   container with ~80px page margins, a 305px left nav rail + 20px gap, and a
+   ~955px content column). The section is constrained and centered, keeps
+   normal block flow for correct vertical spacing, reserves a left gutter via
+   padding for the nav rail, and the nav is positioned into that gutter. */
+main > .section:has(.section-nav) {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 325px;
+}
+
+/* Left rail: pull the nav wrapper out of flow into the left gutter. */
+main > .section:has(.section-nav) > .block-content:has(.section-nav) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 305px;
+}
+
+/* The content column (title/intro + feature cards) fills the ~955px area to
+   the right of the gutter and aligns flush-left there. Override the
+   framework's centered, max-width default-content so headings line up with
+   the cards. */
+main > .section:has(.section-nav) > .default-content,
+main > .section:has(.section-nav) > .block-content:not(:has(.section-nav)) {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Vertical rhythm between feature blocks: each image+text block is followed
+   by the next section's heading 40px below (matches the source spacing). */
+main > .section:has(.section-nav) > .block-content:not(:has(.section-nav)) {
+  margin-bottom: 40px;
+}
+
+/* Heading/type sizing to match the source article (CircularXX 48/36, 700,
+   rgb(51,51,51); body 16/1.5). The project base headings are smaller, so
+   override within this content section. */
+main > .section:has(.section-nav) h1 {
+  margin: 0 0 24px;
+  color: rgb(51 51 51);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+main > .section:has(.section-nav) h2 {
+  margin: 0 0 16px;
+  color: rgb(51 51 51);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+main > .section:has(.section-nav) p,
+main > .section:has(.section-nav) .columns-feature {
+  color: rgb(51 51 51);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (width <= 900px) {
+  main > .section:has(.section-nav) {
+    padding-left: 0;
+  }
+
+  main > .section:has(.section-nav) > .block-content:has(.section-nav) {
+    position: static;
+    width: 100%;
+  }
+}
+
+.section-nav .section-nav-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-nav .section-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-nav .section-nav-link {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 4px;
+  color: rgb(51 51 51);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.section-nav .section-nav-link:hover {
+  background-color: rgb(245 245 245);
+  color: rgb(1 105 140);
+}
+
+/* Active item: larger teal label, light-grey background, 4px teal left bar */
+.section-nav .section-nav-item.is-active .section-nav-link {
+  color: rgb(1 105 140);
+  font-size: 20px;
+  font-weight: 500;
+  background-color: rgb(245 245 245);
+}
+
+.section-nav .section-nav-item.is-active::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 4px;
+  border-radius: 4px;
+  background-color: rgb(1 105 140);
+}
+
+/* Chevron on expandable items (decorative — no panel on source) */
+.section-nav .section-nav-chevron {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding-right: 8px;
+  color: rgb(51 51 51);
+  pointer-events: none;
+}

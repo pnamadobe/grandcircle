@@ -1,0 +1,41 @@
+{
+  "variantName": "columns-feature",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-06-16T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://pnamadobe.github.io/gcdifference/",
+    "originPage": "The Grand Circle Difference (content page, six feature sections)",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "image + body paragraph",
+    "buttonCount": 0,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "editorial feature sections with one image beside body copy",
+      "content pages with repeating image + text rows",
+      "about/marketing pages with side-by-side layouts"
+    ],
+    "notSuitableFor": [
+      "grids of repeating cards (use a cards variant)",
+      "hero/banner intros with overlaid text",
+      "tabbed or interactive content"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/grand-circle-difference"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-06-16T00:00:00.000Z"
+  }
+}

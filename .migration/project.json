@@ -1,7 +1,11 @@
 {
-  "previewOrg": "pnamadobe",
-  "previewSite": "grandcircle",
   "type": "da",
-  "contentHostUrl": "https://content.da.live/pnamadobe/grandcircle/",
-  "libraryUrl": "https://content.da.live/pnamadobe/grandcircle/.da/library/blocks"
+  "sites": {
+    "grandcircle": {
+      "previewOrg": "pnamadobe",
+      "previewSite": "grandcircle",
+      "contentHostUrl": "https://content.da.live/pnamadobe/grandcircle/",
+      "libraryUrl": "https://content.da.live/pnamadobe/grandcircle/.da/library/blocks.json"
+    }
+  }
 }

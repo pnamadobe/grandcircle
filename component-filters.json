@@ -1,0 +1,29 @@
+[
+  {
+    "id": "main",
+    "components": [
+      "section"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "columns",
+      "columns-feature",
+      "section-nav",
+      "card",
+      "hero",
+      "table",
+      "youtube",
+      "advanced-tabs",
+      "image",
+      "text"
+    ]
+  },
+  {
+    "id": "section-nav",
+    "components": [
+      "section-nav-item"
+    ]
+  }
+]

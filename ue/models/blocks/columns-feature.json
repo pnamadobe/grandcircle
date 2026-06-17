@@ -1,0 +1,57 @@
+{
+  "definitions": [
+    {
+      "title": "Columns (feature)",
+      "id": "columns-feature",
+      "model": "columns-feature",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"columns-feature\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div><div></div></div></div>",
+          "fields": [
+            {
+              "name": "image",
+              "selector": "div>div:nth-child(1)>picture>img[src]"
+            },
+            {
+              "name": "imageAlt",
+              "selector": "div>div:nth-child(1)>picture>img[alt]"
+            },
+            {
+              "name": "text",
+              "selector": "div>div:nth-child(2)"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "columns-feature",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Feature Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "text",
+          "label": "Body Text",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

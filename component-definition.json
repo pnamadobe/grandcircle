@@ -1,0 +1,121 @@
+{
+  "groups": [
+    {
+      "title": "Default Content",
+      "id": "default",
+      "components": [
+        {
+          "title": "Text",
+          "id": "text",
+          "model": "text",
+          "plugins": {
+            "da": {
+              "name": "text",
+              "type": "text"
+            }
+          }
+        },
+        {
+          "title": "Image",
+          "id": "image",
+          "model": "image",
+          "plugins": {
+            "da": {
+              "name": "image",
+              "type": "image",
+              "fields": [
+                {
+                  "name": "image",
+                  "selector": "img[src]"
+                },
+                {
+                  "name": "imageAlt",
+                  "selector": "img[alt]"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sections",
+      "id": "sections",
+      "components": [
+        {
+          "title": "Section",
+          "id": "section",
+          "plugins": {
+            "da": {
+              "unsafeHTML": "<div></div>"
+            }
+          },
+          "filter": "section",
+          "model": "section"
+        }
+      ]
+    },
+    {
+      "title": "Blocks",
+      "id": "blocks",
+      "components": [
+        {
+          "title": "Columns (feature)",
+          "id": "columns-feature",
+          "model": "columns-feature",
+          "plugins": {
+            "da": {
+              "unsafeHTML": "<div class=\"columns-feature\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div><div></div></div></div>",
+              "fields": [
+                {
+                  "name": "image",
+                  "selector": "div>div:nth-child(1)>picture>img[src]"
+                },
+                {
+                  "name": "imageAlt",
+                  "selector": "div>div:nth-child(1)>picture>img[alt]"
+                },
+                {
+                  "name": "text",
+                  "selector": "div>div:nth-child(2)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Section Nav",
+          "id": "section-nav",
+          "model": "section-nav",
+          "filter": "section-nav",
+          "plugins": {
+            "da": {
+              "name": "section-nav",
+              "behaviour": "component"
+            }
+          }
+        },
+        {
+          "title": "Section Nav Item",
+          "id": "section-nav-item",
+          "model": "section-nav-item",
+          "plugins": {
+            "da": {
+              "unsafeHTML": "<div><div><a href=\"\"></a></div></div>",
+              "fields": [
+                {
+                  "name": "link",
+                  "selector": "div>a[href]"
+                },
+                {
+                  "name": "linkText",
+                  "selector": "div>a"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

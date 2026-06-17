@@ -1,0 +1,78 @@
+{
+  "definitions": [
+    {
+      "title": "Section Nav",
+      "id": "section-nav",
+      "model": "section-nav",
+      "filter": "section-nav",
+      "plugins": {
+        "da": {
+          "name": "section-nav",
+          "behaviour": "component"
+        }
+      }
+    },
+    {
+      "title": "Section Nav Item",
+      "id": "section-nav-item",
+      "model": "section-nav-item",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div><div><a href=\"\"></a></div></div>",
+          "fields": [
+            {
+              "name": "link",
+              "selector": "div>a[href]"
+            },
+            {
+              "name": "linkText",
+              "selector": "div>a"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "section-nav",
+      "fields": []
+    },
+    {
+      "id": "section-nav-item",
+      "fields": [
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Link"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkText",
+          "label": "Label",
+          "value": ""
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "state",
+          "label": "State",
+          "value": "",
+          "options": [
+            { "name": "Default", "value": "" },
+            { "name": "Active (current page)", "value": "active" },
+            { "name": "Expandable (chevron)", "value": "expand" }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "section-nav",
+      "components": ["section-nav-item"]
+    }
+  ]
+}

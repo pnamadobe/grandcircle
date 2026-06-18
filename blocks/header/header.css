@@ -285,6 +285,31 @@ header .nav-cta:hover {
   color: #fff;
 }
 
+/* ---- Hamburger toggle (hidden on desktop) ---- */
+header .nav-toggle {
+  display: none;
+  flex: 0 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+header .nav-toggle-bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: rgb(51 51 51);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
 /* ---- Mobile ---- */
 @media (width <= 900px) {
   header .nav-promo-inner {
@@ -295,34 +320,105 @@ header .nav-cta:hover {
   }
 
   header .nav-bar-inner {
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  header .nav-brand img {
+    width: 150px;
+    height: auto;
+  }
+
+  header .nav-toggle {
+    display: flex;
+  }
+
+  /* Collapsed by default; the toggle adds .nav-open on the header block. */
+  header .nav-bar-right {
+    display: none;
+    flex-basis: 100%;
+    order: 3;
+    gap: 16px;
+    padding-top: 8px;
+  }
+
+  header.nav-open .nav-bar-inner {
     flex-wrap: wrap;
+  }
+
+  header.nav-open .nav-bar-right {
+    display: flex;
+  }
+
+  header .nav-utility-row {
+    flex-direction: column;
+    align-items: stretch;
     gap: 12px;
   }
 
   header .nav-search {
-    order: 3;
-    flex-basis: 100%;
-    max-width: none;
+    order: 0;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   header .nav-utility {
-    gap: 12px;
-    margin-left: auto;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+
+  header .nav-main {
+    width: 100%;
   }
 
   header .nav-main-list {
-    flex-wrap: wrap;
-    gap: 16px 24px;
-    padding: 12px 0;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    gap: 0;
+    height: auto;
+  }
+
+  header .nav-main-item {
+    border-top: 1px solid rgb(229 231 235);
+  }
+
+  header .nav-main-link {
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    padding: 14px 4px;
   }
 
   header .nav-main-item-cta {
     margin-left: 0;
+    border-top: none;
+    padding-top: 12px;
   }
 
-  /* Stacked mobile header is taller; match the reserved space in styles.css. */
+  header .nav-cta {
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Animate the bars into an X when open. */
+  header.nav-open .nav-toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  header.nav-open .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  header.nav-open .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Collapsed header is short (promo banner + single bar row). Reserve that
+     height up front to avoid the content jump (CLS) when JS builds the nav. */
   header,
   header.header {
-    min-height: 412px;
+    min-height: 200px;
   }
 }

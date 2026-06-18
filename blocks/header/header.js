@@ -164,8 +164,24 @@ export default async function init(el) {
 
   if (brandSection) barInner.append(buildBrand(brandSection));
 
+  // Hamburger toggle (mobile only; hidden on desktop via CSS).
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'nav-toggle';
+  toggle.setAttribute('aria-label', 'Open menu');
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.innerHTML = '<span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>';
+
   const barRight = document.createElement('div');
   barRight.className = 'nav-bar-right';
+  barRight.id = 'nav-bar-right';
+  toggle.setAttribute('aria-controls', 'nav-bar-right');
+
+  toggle.addEventListener('click', () => {
+    const open = el.classList.toggle('nav-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
 
   const utilityRow = document.createElement('div');
   utilityRow.className = 'nav-utility-row';
@@ -177,7 +193,7 @@ export default async function init(el) {
   if (navSection) navRow.append(buildMainNav(navSection));
 
   barRight.append(utilityRow, navRow);
-  barInner.append(barRight);
+  barInner.append(toggle, barRight);
   bar.append(barInner);
 
   el.append(bar);

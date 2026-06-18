@@ -373,7 +373,7 @@ svg {
    so the JS-built header doesn't shove content down on load (mobile CLS). */
 @media (width <= 900px) {
   :root {
-    --header-height: 412px;
+    --header-height: 200px;
   }
 }
 

@@ -12,6 +12,12 @@ header.header {
   width: 100%;
   height: auto;
 
+  /* Reserve the rendered header height up front. The header markup is built
+     by JS after load; without a reserved height the page content shifts down
+     ~166px when the nav fills in (Cumulative Layout Shift). 230px = promo
+     banner (76px) + utility/nav bar (154px) at desktop. */
+  min-height: 230px;
+
   /* CircularXX (source font) is not bundled in this project; inherit the
      project's body font so the header matches the rest of the page. */
   font-family: inherit;
@@ -312,5 +318,11 @@ header .nav-cta:hover {
 
   header .nav-main-item-cta {
     margin-left: 0;
+  }
+
+  /* Stacked mobile header is taller; match the reserved space in styles.css. */
+  header,
+  header.header {
+    min-height: 412px;
   }
 }

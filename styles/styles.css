@@ -189,7 +189,11 @@
   --body-line-height: 1.6;
 
   /* misc */
-  --header-height: 64px;
+
+  /* Matches the rendered header height (promo 76px + nav bar 154px) so the
+     space reserved at first paint equals the final header, avoiding the
+     content jump (CLS) when the JS-built header fills in. */
+  --header-height: 230px;
   --breadcrumb-height: 24px;
 }
 
@@ -362,6 +366,15 @@ img {
 svg {
   width: 20px;
   height: 20px;
+}
+
+/* Below the header's 900px breakpoint the promo banner and nav stack
+   vertically, making the header taller. Reserve that taller height up front
+   so the JS-built header doesn't shove content down on load (mobile CLS). */
+@media (width <= 900px) {
+  :root {
+    --header-height: 412px;
+  }
 }
 
 /* @media (width >= 600px) {} */
